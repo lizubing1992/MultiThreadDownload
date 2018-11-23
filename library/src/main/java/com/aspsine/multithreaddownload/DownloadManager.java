@@ -89,12 +89,22 @@ public class DownloadManager implements Downloader.OnDownloaderDestroyedListener
         });
     }
 
+    /**
+     *
+     * @param request 请求实体参数Entity
+     * @param tag 下载地址
+     * @param callBack 返回给调用的CollBack
+     */
     public void download(DownloadRequest request, String tag, CallBack callBack) {
         final String key = createKey(tag);
         if (check(key)) {
+            // 请求的响应 需要状态传递类 以及对应的回调
             DownloadResponse response = new DownloadResponseImpl(mDelivery, callBack);
-            Downloader downloader = new DownloaderImpl(request, response, mExecutorService, mDBManager, key, mConfig, this);
+            // 下载器 需要线程池 数据库管理者 对应的url key值 之后回调给自己
+            Downloader downloader = new DownloaderImpl(request, response,
+                mExecutorService, mDBManager, key, mConfig, this);
             mDownloaderMap.put(key, downloader);
+            //开始下载
             downloader.start();
         }
     }
@@ -206,7 +216,7 @@ public class DownloadManager implements Downloader.OnDownloaderDestroyedListener
     }
 
     private static String createKey(String tag) {
-        if (tag == null) {
+         if (tag == null) {
             throw new NullPointerException("Tag can't be null!");
         }
         return String.valueOf(tag.hashCode());

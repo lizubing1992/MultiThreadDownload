@@ -71,8 +71,11 @@ public class DownloaderImpl implements Downloader, ConnectTask.OnConnectListener
 
     @Override
     public void start() {
+        //修改为Started状态
         mStatus = DownloadStatus.STATUS_STARTED;
+        //CallBack 回调给调用者
         mResponse.onStarted();
+        // 连接获取是否支持多线程下载
         connect();
     }
 
@@ -117,14 +120,15 @@ public class DownloaderImpl implements Downloader, ConnectTask.OnConnectListener
     @Override
     public void onConnected(long time, long length, boolean isAcceptRanges) {
         if (mConnectTask.isCanceled()) {
-            // despite connection is finished, the entire downloader is canceled
+            //连接取消
             onConnectCanceled();
         } else {
             mStatus = DownloadStatus.STATUS_CONNECTED;
+            //回调给你响应连接成功状态
             mResponse.onConnected(time, length, isAcceptRanges);
-
             mDownloadInfo.setAcceptRanges(isAcceptRanges);
             mDownloadInfo.setLength(length);
+            //真正开始下载
             download(length, isAcceptRanges);
         }
     }
@@ -208,21 +212,33 @@ public class DownloaderImpl implements Downloader, ConnectTask.OnConnectListener
         }
     }
 
+    /**
+     * 执行连接任务
+     */
     private void connect() {
         mConnectTask = new ConnectTaskImpl(mRequest.getUri(), this);
         mExecutor.execute(mConnectTask);
     }
 
+    /**
+     * 下载开始
+     * @param length 设置下载的长度
+     * @param acceptRanges 是否支持断点下载
+     */
     private void download(long length, boolean acceptRanges) {
         mStatus = DownloadStatus.STATUS_PROGRESS;
         initDownloadTasks(length, acceptRanges);
-        // start tasks
+        //开始下载任务
         for (DownloadTask downloadTask : mDownloadTasks) {
             mExecutor.execute(downloadTask);
         }
     }
 
-    //TODO
+    /**
+     * 初始化下载任务
+     * @param length
+     * @param acceptRanges
+     */
     private void initDownloadTasks(long length, boolean acceptRanges) {
         mDownloadTasks.clear();
         if (acceptRanges) {
@@ -234,9 +250,11 @@ public class DownloaderImpl implements Downloader, ConnectTask.OnConnectListener
             }
             mDownloadInfo.setFinished(finished);
             for (ThreadInfo info : threadInfos) {
+                //开始多线程下载
                 mDownloadTasks.add(new MultiDownloadTask(mDownloadInfo, info, mDBManager, this));
             }
         } else {
+            //单线程下载不需要保存数据库
             ThreadInfo info = getSingleThreadInfo();
             mDownloadTasks.add(new SingleDownloadTask(mDownloadInfo, info, this));
         }

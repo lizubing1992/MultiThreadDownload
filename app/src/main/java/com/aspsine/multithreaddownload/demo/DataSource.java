@@ -42,8 +42,8 @@ public class DataSource {
     };
 
     private static final String[] URLS = {
-            "http://s1.music.126.net/download/android/CloudMusic_2.8.1_official_4.apk",
-            "http://dl.m.cc.youku.com/android/phone/Youku_Phone_youkuweb.apk",
+            "https://ali-fir-pro-binary.fir.im/5896febc8b7f6d4a3604f65190b1509e40655fd7.apk?auth_key=1542349071-0-0-e87949ff3acf7e3959fb9d801afc10de",
+            "https://338994b8d8e83c1b53f48ff6bf43e799.dd.cdntips.com/imtt.dd.qq.com/16891/0D6B19C285229E38FA7D81D0B5E7B24F.apk?mkey=5bee7c28778be2ed&f=24c3&fsname=com.qiyi.video_9.10.0_81180.apk&csr=1bbd&cip=119.139.196.24&proto=https",
             "http://dldir1.qq.com/qqmi/TencentVideo_V4.1.0.8897_51.apk",
             "http://wap3.ucweb.com/files/UCBrowser/zh-cn/999/UCBrowser_V10.6.0.620_android_pf145_(Build150721222435).apk",
             "http://msoftdl.360.cn/mobilesafe/shouji360/360safesis/360MobileSafe_6.2.3.1060.apk",
